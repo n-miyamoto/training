@@ -1,0 +1,11 @@
+{
+	"version": "0.1.0",
+	"command": "g++",
+	"isShellCommand": true,
+	"showOutput": "always",
+	"args": [
+		"-g",
+		"a.cpp"
+	]
+
+}

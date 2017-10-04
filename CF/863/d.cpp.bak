@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+#define BUF (200005)
+
+int n,q,m;
+int a[BUF];
+typedef struct {
+	int tp;
+	int l;
+	int r;
+}Q;
+Q qr[BUF];
+int b[BUF];
+void input(void){
+	cin >> n >> q >> m;
+	for(int i=1;i<=n;i++)cin >> a[i];
+	for(int i=0;i<q;i++)cin >> qr[i].tp >> qr[i].l >> qr[i].r ;
+	for(int i=1;i<=m;i++)cin >> b[i];
+}
+
+int main(void){
+	input();
+
+	for(int i=0;i<q;i++){
+		if(qr[i].tp==1){
+			//cyclic shift
+			int tmp = a[qr[i].r];
+			for(int j=qr[i].r;j>qr[i].l;j--){
+				a[j]=a[j-1];				
+			}
+			a[qr[i].l] = tmp; 
+		}else{
+			// rev
+			for(int j=0;j<(qr[i].r-qr[i].l+1)/2;j++){
+				int temp = a[qr[i].r-j];
+				a[qr[i].r-j] = a[qr[i].l+j];
+				a[qr[i].l+j] = temp;
+			}
+		}	
+	}
+
+//	for(int i=1;i<=n;i++)cout << a[i];
+
+	for(int i=1;i<=m;i++){
+		cout << a[b[i]] << " ";
+	}
+	cout << endl;
+	return 0;
+}
