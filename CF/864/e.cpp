@@ -1,61 +1,58 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
-#include <vector>
 
 using namespace std;
 #define BUF (1000)
 
-vector<int> vec;
-
 int n;
-int t[BUF];
-int d[BUF];
-int p[BUF];
+typedef struct{
+	int t;
+	int d;
+	int p;
+	int ix;
+}A;
+
+A a[101];
+bool asc(A a1, A a2){
+	return a1.d<a2.d;
+} 
 
 void input(void){
 	cin >> n;
-	for(int i=1;i<=n;i++) cin >> t[i] >> d[i] >> p[i];
-}
-
-int flag[21];
-
-int dfs(int T, int V){
-	int sum=0;
-	for(int i=1;i<=n;i++)sum+=flag[i];
-	if(sum==n){
-		return V;
-	}
-
-	int max=0;
-	ind max_ind=0;
 	for(int i=1;i<=n;i++){
-		int tmp;
-		if(flag[i]==1){
-		}else{
-			flag[i]=1;
-			if(T+t[i]<d[i]){
-				tmp = dfs(T+t[i],V+p[i]);
-				if(max<tmp){ 
-					max = tmp;
-					max_ind=i;
-				}
-			}else{
-				tmp = V;
-				if(max<tmp) max = tmp;
-			}
-			vec.pop_back();
-			flag[i]=0;
-		}
+		cin >> a[i].t >> a[i].d >> a[i].p;
+		a[i].ix = i;
 	}
-	if(max_ind!=0)vec.push_back(max_ind);
-	return max;
 }
 
 int main(void){
 	input();
-	for(int i=0;i<21;i++) flag[i]=0;
+	sort(a+1,a+n+1,asc);
 
-	cout << dfs(0,0) << endl;
+	int dp[101][2001];
+	int p[101][2001];
+	//for(int i=1;i<=n;i++) cout << a[i].ix;
+	
+	for(int i=1;i<=n;i++){
+		for(int j=2001;j>=1;j--){
+			dp[i][j] = dp[i-1][j];
+			p[i][j]=0;
+			//cout <<dp[i][j];
+			if( j<a[i].d && j>=a[i].t ){
+				if(dp[i-1][j-a[i].t]+a[i].p >dp[i][j]){
+					dp[i][j] = dp[i-1][j-a[i].t]+a[i].p;
+					p[i][j]=1;
+				//	cout << dp[i][j];
+				}
+			}
+		}
+	}
+
+	int max = 0;
+	for(int i=0;i<2001;i++) if(max<dp[n][i]){
+		max = dp[n][i];
+	}
+	cout << max << endl;
 	return 0;
 }
