@@ -1,33 +1,42 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
+#include <string.h>
 
 using namespace std;
 #define BUF (100005)
 
 int n,k;
-int a[4][BUF];
 int ans[4];
+int a[0b10000];
+
 void input(void){
 	cin >> n >> k;
-	for(int i=0;i<n;i++)for(int j=0;j<k;j++){
-		cin >> a[j][i];
+	for(int i=0;i<n;i++){
+		int key=0;
+		for(int j=0;j<k;j++){
+			int tmp;
+			cin >> tmp ;
+			if(tmp) key+=1<<j;
+		}
+		a[key]=1;
 	}
 }
 
 int main(void){
+	memset(a,0,0b10000);
 	input();
 
-	for(int i=0;i<k;i++) for(int j=0;j<n;j++){
-		ans[i]+=a[i][j];		
-	}	
-
-	int flg=1;
-	for(int i=0;i<k;i++){
-		if( ans[i] < (n/2) )flg=0;
+	if(a[0]==1){cout << "YES" << endl; return 0;}
+	for(int i=0; i<0b10000 ;i++ ){
+		for(int j=0; j<0b10000 ;j++ ){
+			if(a[i] && a[j] && i!=j && (i & j) == 0  ) {
+				 cout << "YES" <<endl;	
+				 return 0; 
+			}
+		}
 	}
 
-	if(flg==1) cout << "YES" <<endl;
-	else cout << "NO" << endl;
+	cout << "NO" << endl;
 	return 0;
 }
