@@ -1,10 +1,8 @@
 #include <bits/stdc++.h>
-//#include <stdio.h>
-//#include <iostream>
-//#include <algorithm>
 
 using namespace std;
 #define BUF (1000)
+#define ll long long 
 
 int n;
 
