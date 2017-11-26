@@ -1,16 +1,15 @@
-#include <stdio.h>
-#include <iostream>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
-#define BUF (1000)
+
+#define BUF (100005)
+#define INF (1000000005)
+#define ll long long 
+
 
 int n;
-void input(void){
-	cin >> n;
-}
+char s[BUF];
 
 int main(void){
-	input();
+	cin >> n;
 	return 0;
 }
