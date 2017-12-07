@@ -14,8 +14,8 @@ CXX=g++
 #CXX=clang++
 
 CXXFLAGS = -g -Wall -ansi -padentic
-SRCS = $(SRC_DIR)/mysegtree.cpp
-TARGET = $(LIB_DIR)/libmysegtree.a
+SRCS = $(SRC_DIR)/mysegtree.cpp mybit.cpp
+TARGET = $(LIB_DIR)/libmytrees.a
 OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.cpp=.o)))
 
 default: $(TARGET)
@@ -31,12 +31,12 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
 
-TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp
-TEST_TARGET= $(TEST_DIR)/gtest_mysegtree
+TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp  gtest_mybit.cpp
+TEST_TARGET= $(TEST_DIR)/gtest_mytrees
 TEST_OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_SRCS:.cpp=.o)))
 
 LIBS += -L$(LIB_DIR)
-LIBS += -lmysegtree
+LIBS += -lmytrees
 
 CPPFLAGS = -isystem $(GTEST_DIR)/include
 CXXFLAGS = -g -Wall -Wextra -pthread -std=c++14 
