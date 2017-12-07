@@ -21,6 +21,7 @@ init my minary indexed tree
 void bit_init(int n_){
 	n=1;
 	while(n<n_)n*=2;
+	for(int i=0;i<=n;i++)bit[i]=0;
 }
 
 /*
