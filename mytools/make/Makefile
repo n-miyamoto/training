@@ -31,7 +31,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
 
-TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp  gtest_mybit.cpp gtest_mysqrtdiv.cpp
+TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp  gtest_mybit.cpp gtest_mysqdiv.cpp
 TEST_TARGET= $(TEST_DIR)/gtest_mytrees
 TEST_OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_SRCS:.cpp=.o)))
 
