@@ -47,6 +47,14 @@ TEST_F(MySqdivTest, req)
 	for(int i=0;i<14;i++) for(int j=i+1;j<14;j++){
 		EXPECT_EQ(i,req(i,j));
 	}
+
+	for(int i=0;i<14;i++) update_bkt(i,13-i);
+	for(int i=0;i<14;i++) for(int j=i+1;j<14;j++){
+		EXPECT_EQ(13-j,req(i,j));
+	}
+
+
+
 }
 
 } // namespace	
