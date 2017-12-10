@@ -14,7 +14,9 @@ CXX=g++
 #CXX=clang++
 
 CXXFLAGS = -g -Wall -ansi -padentic
-SRCS = $(SRC_DIR)/mysegtree.cpp mybit.cpp mysqdiv.cpp
+
+SRCS = $(wildcard $(SRC_DIR)/*.cpp) 
+#SRCS = $(SRC_DIR)/mysegtree.cpp mybit.cpp mysqdiv.cpp 
 TARGET = $(LIB_DIR)/libmytrees.a
 OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.cpp=.o)))
 
@@ -31,7 +33,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
 
-TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp  gtest_mybit.cpp gtest_mysqdiv.cpp
+#TEST_SRCS = $(TEST_DIR)/gtest_mysegtree.cpp  gtest_mybit.cpp gtest_mysqdiv.cpp
+TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
 TEST_TARGET= $(TEST_DIR)/gtest_mytrees
 TEST_OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_SRCS:.cpp=.o)))
 
