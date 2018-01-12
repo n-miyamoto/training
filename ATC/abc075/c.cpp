@@ -1,50 +1,40 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-#define BUF (60)
+#define BUF (53)
+#define INF (100)
 
 int N,M;
 
 int A[BUF][BUF];
-int a[BUF],b[BUF];
-int f[BUF];
-int fcnt=0;
+int c[BUF][BUF];
+int a[BUF];
+int b[BUF];
 
-int dfs(int nd){
-//	cout << nd << fcnt;
-	f[nd]=1;fcnt++;
-	if(fcnt==N) return 1; //renketsu
-	int ret=0;
-	for(int i=1;i<=N;i++){
-		if( f[i]==0 && A[nd][i]==1){
-			ret+=dfs(i);
-		}
-	}
-	if(ret>0) return 1;
-	else return 0;
+
+void wf(void){
+    for(int k=1;k<=N;k++) for(int i=1;i<=N;i++) for(int j=1;j<=N;j++){
+        if(c[i][j] > c[i][k]+c[k][j]) c[i][j] = c[i][k]+c[k][j];   
+    }
 }
 
+int ans = 0;
 int main(void){
-	memset(A,0,BUF*BUF);
-	memset(f,0,BUF);
 	cin >> N >> M;
+	for(int i=0;i<BUF;i++)for(int j=0;j<BUF;j++) A[i][j]=INF;
 	for(int i=1;i<=M;i++){
 		cin >> a[i] >> b[i];
 		A[a[i]][b[i]] = 1;
 		A[b[i]][a[i]] = 1;
 	}
 
-	int ans = M;
 	for(int i=1;i<=M;i++){
-		memset(f,0,BUF);
-		fcnt=0;
-		A[a[i]][b[i]]=0;
-		A[b[i]][a[i]]=0;
-		ans -= dfs(1);
-		A[a[i]][b[i]]=1;
-		A[b[i]][a[i]]=1;
-		//cout << ans << "\n";
-	}	
+		for(int i=0;i<BUF;i++)for(int j=0;j<BUF;j++) c[i][j]=A[i][j];
+		c[a[i]][b[i]]=INF;
+		c[b[i]][a[i]]=INF;
+		wf();
+		if(c[a[i]][b[i]]==INF) ans++;
+	}
 
 	cout << ans << endl;
 
