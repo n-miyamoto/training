@@ -3,54 +3,50 @@
 #include <algorithm>
 
 using namespace std;
-#define BUF (1000)
+#define BUF (100005)
 
-int n,k;
-unsigned int A[BUF];
-unsigned int B[BUF];
-unsigned int M[BUF];
+int N,K;
+int A[BUF],B[BUF];
 
 void input(void){
-	cin >> n >> k;
-	for(int i=1;i<=n;i++) cin >> A[i] >> B[i];
+	cin >> N >> K;
+	for(int i=1;i<=N;i++) cin >> A[i] >> B[i];
 }
 
-unsigned int max(unsigned int a, unsigned int b){
-	if(a>b) return a;
-	else return b;
-}
 
-unsigned int dfs(int l){
-	if(l==0) return 0;
 
-	if((k>>(l-1))%2==0){
-		return dfs(l-1);
-	}else{
-		cout << "dfs" << l << endl;
-		unsigned int c0 = 0;
-		for(int j=1;j<=n;j++) if(M[j]<l) c0+=B[j];
-		unsigned int ks = 0;;
-		for(int j=1;j<=n;j++) if(M[j]==l) if(A[j]<=k) ks += B[j];
-		unsigned int c1 = dfs(l-1) + ks;
-		cout << c0 << " " << c1 << ks <<endl;
-		return max(c0,c1);
+int dfs(int b){
+	if(b==0) return 0;
+
+	if(K>>b%2==0) return dfs(b-1);
+	else{
+
 	}
+}
+
+int C[BUF];
+
+int cost(int b){
+	int tmp=0;
+	for(int i=1;i<=N;i++){
+		if(C[i]<b) tmp+=B[i]; 
+	}
+	return tmp;
 }
 
 int main(void){
 	input();
 
-	for(int i=1;i<=n;i++){
-		for(int j=30;j>0;j--){
-			if((A[i]>>j)%2==1) {
-				M[i] = j+1;
-				break;
-			}
+	for(int i=1;i<=N;i++){
+		for(int j=0;j<=30;j++){
+			if(A[i]>>j==1)C[i] = j+1; 
 		}
-		cout << M[i] << endl;
+		cout << C[i];
 	}
 
-	cout << dfs(30) << endl;
-	return 0;
+	for(int i=0;i<=30;i++){
 
+
+	}
+	return 0;
 }
