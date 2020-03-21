@@ -28,17 +28,6 @@ long long COM(int n, int k){
     return fac[n] * (finv[k] * finv[n - k] % MOD) % MOD;
 }
 
-// a^n mod を計算する
-long long modpow(long long a, long long n) {
-    long long res = 1;
-    while (n > 0) {
-        if (n & 1) res = res * a % MOD;
-        a = a * a % MOD;
-        n >>= 1;
-    }
-    return res;
-}
-
 int main(void){
 	COMinit();
 	cin >> n >> k;
