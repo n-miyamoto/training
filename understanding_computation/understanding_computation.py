@@ -1,12 +1,27 @@
+#!/usr/bin/env python3
+
+
 
 # define virtual machine
 class Machine():
-    def __init__(self, expression):
+    def __init__(self, expression, environment):
         self.expression = expression
+        self.environment = environment
     def run(self):
         while self.expression.reducible():
-            self.expression = self.expression.reduce()   
+            self.expression = self.expression.reduce(self.environment)   
             print(self.expression)
+
+# define variable
+class Variable():
+    def __init__(self, name):
+        self.name = name
+    def reducible(self):
+        return True 
+    def __repr__(self):
+        return self.name
+    def reduce(self, environment):
+        return environment[self.name]
 
 # define literals
 class Literal():
@@ -38,47 +53,60 @@ class Operator():
         return True
     def not_reducible(self):
         pass
-    def reduce(self):
+    def ret_self(self, l, r):
+        return Operator(l,r)
+    def reduce(self, environment):
         if self.left_value.reducible():
-            return LessThan(self.left_value.reduce(), self.right_value)
+            return self.ret_self(self.left_value.reduce(environment), self.right_value)
         if self.right_value.reducible():
-            return LessThan(self.left_value, self.right_value.reduce())
+            return self.ret_self(self.left_value, self.right_value.reduce(environment))
         else:
             return self.not_reducible()
 
 class LessThan(Operator):
     def get_symbol(self):
         return "<"
+    def ret_self(self, l, r):
+        return LessThan(l,r)
     def not_reducible(self):
         return Boolean(self.left_value.value < self.right_value.value)
 
 class Add(Operator):
     def get_symbol(self):
         return "+"
+    def ret_self(self, l, r):
+        return Add(l,r)
     def not_reducible(self):
         return Number(self.left_value.value + self.right_value.value)
 
 class Multiply(Operator):
     def get_symbol(self):
         return "*"
-    def reduce(self):
-        if self.left_value.reducible():
-            return Add(self.left_value.reduce(), self.right_value)
-        if self.right_value.reducible():
-            return Add(self.left_value, self.right_value.reduce())
-        else:
-            return Number(self.left_value.value * self.right_value.value)
+    def ret_self(self, l, r):
+        return Multiply(l,r)
+    def not_reducible(self):
+        return Number(self.left_value.value * self.right_value.value)
 
 if __name__ == "__main__":
     #Test +/* and number
     expression = Add(Number(5),Multiply(Number(5),Number(2)))
+    environment = {}
     print(expression)
-    machine = Machine(expression)
+    machine = Machine(expression, environment)
     machine.run()
 
     #Test < and boolean
     expression = LessThan(Number(4),Number(2))
+    environment = {}
     print(expression)
-    machine = Machine(expression)
+    machine = Machine(expression, environment)
     machine.run()
+
+    #Test use Variable
+    expression = Add(Variable('y'),Multiply(Variable('x'),Number(3)))
+    environment = {'x':Number(5), 'y':Number(10) }
+    print(expression)
+    machine = Machine(expression, environment)
+    machine.run()
+
 
