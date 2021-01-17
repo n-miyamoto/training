@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 	std::cout << "device num: "<< ret_num_devices << std::endl;
 
     context = clCreateContext(NULL,1,&device_id,NULL,NULL,&ret);
-    command_queue = clCreateCommandQueue(context,device_id,0,&ret);
+    command_queue = clCreateCommandQueue(context,device_id,CL_QUEUE_PROFILING_ENABLE,&ret);
     program = clCreateProgramWithSource(context,1,
         (const char **)&kernel_source,(const size_t *)&kernel_size,&ret);
     ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
@@ -135,10 +135,12 @@ int main(int argc, char** argv)
     /* execute kernel */
     size_t globalWorkSize[] = {WIDTH*HEIGHT};
     size_t localWorkSize[] = {1};
+	cl_event event;
 	c_start = clock();
 	{
     	ret = clEnqueueNDRangeKernel(command_queue,kernel,1,NULL,
-        		globalWorkSize,localWorkSize,0,NULL,NULL);
+        		globalWorkSize,localWorkSize,0,NULL,&event);
+		clWaitForEvents(1, &event);
 	}
 	c_end = clock();
     if(ret != CL_SUCCESS)
@@ -150,9 +152,16 @@ int main(int argc, char** argv)
     ret = clEnqueueReadBuffer(command_queue,dst_memobj,CL_TRUE,0,
         WIDTH*HEIGHT*sizeof(float),dst_opt ,0,NULL,NULL);
 
+	clFinish(command_queue);
+	cl_ulong time_start;
+	cl_ulong time_end;
 
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
 
-	printf("opt exec : %f [s] \n", (double)(c_end - c_start) / CLOCKS_PER_SEC);
+	double nanoSeconds = time_end-time_start;
+	printf("OpenCl Execution time is: %f [s]\n",nanoSeconds / 1000000000.0);
+
 
 	int check = 1;
 	for(int y=0;y<HEIGHT;y++){
