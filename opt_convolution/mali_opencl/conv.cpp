@@ -132,13 +132,14 @@ int main(int argc, char** argv)
         printf("Error : clSetKernelArg()\n");
         exit(1);
     }
+
     /* execute kernel */
-    size_t globalWorkSize[] = {WIDTH*HEIGHT};
-    size_t localWorkSize[] = {1};
+    size_t globalWorkSize[] = {WIDTH, HEIGHT};
+    size_t* localWorkSize = NULL;
 	cl_event event;
 	c_start = clock();
 	{
-    	ret = clEnqueueNDRangeKernel(command_queue,kernel,1,NULL,
+    	ret = clEnqueueNDRangeKernel(command_queue,kernel,2,NULL,
         		globalWorkSize,localWorkSize,0,NULL,&event);
 		clWaitForEvents(1, &event);
 	}
