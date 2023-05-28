@@ -1,0 +1,72 @@
+---
+type: Batch
+timelimit: 2s
+match: Lines
+
+cases:
+  - name: sample1
+    in: |
+      ?0?
+      2
+    out: |
+      1
+  - name: sample2
+    in: |
+      101
+      4
+    out: |
+      -1
+  - name: sample3
+    in: |
+      ?0?
+      1000000000000000000
+    out: |
+      5
+  - name: sample4
+    in: |
+      ???
+      7
+    out: |
+      7
+  - name: sample5
+    in: |
+      0?1?
+      6
+    out: |
+      6
+  - name: sample6
+    in: |
+      0?1?
+      4
+    out: |
+      3
+  - name: sample7
+    in: |
+      ?1?1?
+      29
+    out: |
+      27
+  - name: sample8
+    in: |
+      ?
+      1
+    out: |
+      1
+  - name: sample9
+    in: |
+      0
+      1
+    out: |
+      0
+  - name: sample10
+    in: |
+      ??1??
+      16
+    out: |
+      15
+
+extend:
+  - type: Text
+    path: "./d"
+    in: /in/*.txt
+    out: /out/*.txt
