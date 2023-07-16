@@ -10,15 +10,7 @@ fn main() {
         p: [usize;m+1],
     }
 
-    let mut price_map = HashMap::new();
-    for (i, color) in d.iter().enumerate(){
-        price_map.insert(color, p[i+1]);
-    }
-
-    let ans: usize = c.iter().map(|x| {
-        price_map.entry(x).or_insert(p[0]);
-        price_map[x]
-    }).sum();
-
+    let price_map: HashMap<&String, &usize> = d.iter().zip(&p[1..]).collect();
+    let ans: usize = c.iter().map(|x| *price_map.get(x).unwrap_or(&&p[0])).sum();
     println!("{}", ans);
 }

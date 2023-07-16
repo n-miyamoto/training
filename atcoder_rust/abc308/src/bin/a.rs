@@ -1,12 +1,7 @@
 use proconio::input;
 
 fn check_monotonic(numbers: &[usize]) -> bool {
-    for i in 1..numbers.len() {
-        if numbers[i] < numbers[i - 1] {
-            return false;
-        }
-    }
-    true
+    numbers.windows(2).all(|pair| pair[0] <= pair[1])
 }
 
 fn main() {
