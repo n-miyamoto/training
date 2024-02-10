@@ -1,41 +1,38 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-using namespace std;
-#define BUF (1000)
-#define ll long long 
+constexpr int N_MAX = 1000005;
+using ll = long long;
 
-int n;
-vector<int> q, a, b;
+int main() {
+    int n;
+    std::cin >> n;
+    std::vector<int> q(n), a(n), b(n);
 
-#define N_MAX 1000005
+    for (auto& x : q) std::cin >> x;
+    for (auto& x : a) std::cin >> x;
+    for (auto& x : b) std::cin >> x;
 
-int main(void){
-	cin >> n;
-	q.resize(n);
-	a.resize(n);
-	b.resize(n);
+    int maxCount = 0;
+    for (int i = 0; i < N_MAX; i++) {
+        bool isNegative = false;
+        for (int j = 0; j < n; j++) {
+            if (i != 0) q[j] -= a[j];
+            if (q[j] < 0) isNegative = true;
+        }
+        if (isNegative) break;
 
-	for (auto& x: q) cin >> x; 
-	for (auto& x: a) cin >> x; 
-	for (auto& x: b) cin >> x; 
+        int minBCount = N_MAX;
+        for (int j = 0; j < n; j++) {
+            if (b[j] != 0) {
+                minBCount = std::min(minBCount, q[j] / b[j]);
+            }
+        }
+        maxCount = std::max(maxCount, i + minBCount);
+    }
 
-	int ans = 0;
-	for(int i=0;i < N_MAX; i++){
-		bool is_neg = false;
-		for(int j = 0;j<n;j++){
-			if(i!=0) q[j] -= a[j];
-			if (q[j] < 0) is_neg=true;
-		}
-		if(is_neg) break;
-		int b_count = N_MAX;
-		for(int j=0;j<n;j++){
-			if(b[j]!=0) b_count = min(b_count, q[j]/b[j]);
-		}
-		ans = max(ans, i+b_count);
-		//cout << i << " " << b_count << endl;
-	}
+    std::cout << maxCount << std::endl;
 
-	cout << ans << endl;
-	
-	return 0;
+    return 0;
 }
