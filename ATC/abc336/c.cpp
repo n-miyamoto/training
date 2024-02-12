@@ -1,29 +1,31 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-using namespace std;
 using ll = long long;
 
+int main() {
+    ll n;
+    std::cin >> n;
+    n--;
 
-int main(void){
-	ll n;
-	cin >> n;
-	n--;
+    std::vector<ll> ans;
 
-	vector<ll> ans;
+    while (n != 0) {
+        ans.push_back(n % 5);
+        n /= 5;
+    }
 
-	while(n!=0){
-		ans.push_back(n%5);
-		n /= 5;
-	}
+    if (ans.empty()) { 
+        std::cout << 0 << std::endl;
+        return 0;
+    }
 
-	if(ans.empty()){ 
-		cout << 0 << endl;
-		return 0;
-	};
+    std::reverse(ans.begin(), ans.end());
+    for (const auto &x : ans) {
+        std::cout << 2 * x;
+    }
+    std::cout << std::endl;
 
-	std::reverse(ans.begin(), ans.end());
-	for(const auto & x : ans) cout << 2*x;
-	cout << endl;
-
-	return 0;
+    return 0;
 }
