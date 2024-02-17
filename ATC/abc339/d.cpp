@@ -1,182 +1,88 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+#include <utility>
+#include <string>
 
-using namespace std;
-#define BUF (1000)
-#define ll long long 
+using ll = long long;
+using Position = std::pair<int, int>;
+using PositionPair = std::pair<Position, Position>;
 
-
-using pos_pair = pair<pair<int, int>, pair<int, int>>; 
-
-bool is_same_pos(pos_pair pp){
-	if (pp.first.first == pp.second.first && pp.first.second == pp.second.second) return true;
-	return false;
+bool isSamePosition(const PositionPair& pp) {
+    return pp.first == pp.second;
 }
 
-unsigned int decode(pos_pair pp){
-	unsigned int val = pp.first.first + (pp.first.second << 8) + (pp.second.first << 16) + (pp.second.second << 24);
-	//cout << "decode " << val << endl;
-	return val;
+unsigned int encode(const PositionPair& pp) {
+    return pp.first.first + (pp.first.second << 8) + (pp.second.first << 16) + (pp.second.second << 24);
 }
 
-pos_pair move(const vector<string> &mat, pos_pair pp, const char dir){
-	auto next_p0 = pp.first;
-	auto next_p1 = pp.second;
+PositionPair move(const std::vector<std::string>& mat, const PositionPair& pp, char dir) {
+    Position nextP0 = pp.first;
+    Position nextP1 = pp.second;
 
-	switch (dir)
-	{
-	case 'U'/* constant-expression */:
-		/* code */
-		next_p0.second++;
-		next_p1.second++;
-		break;
+    switch (dir) {
+        case 'U': nextP0.second++; nextP1.second++; break;
+        case 'R': nextP0.first++; nextP1.first++; break;
+        case 'D': nextP0.second--; nextP1.second--; break;
+        case 'L': nextP0.first--; nextP1.first--; break;
+    }
 
-	case 'R'/* constant-expression */:
-		/* code */
-		next_p0.first++;
-		next_p1.first++;
-		break;
+    int n = mat.size();
+    auto isBlocked = [&](const Position& p) {
+        return p.first < 0 || p.second < 0 || p.first >= n || p.second >= n || mat[p.second][p.first] == '#';
+    };
 
-	case 'D'/* constant-expression */:
-		/* code */
-		next_p0.second--;
-		next_p1.second--;
-		break;
+    if (isBlocked(nextP0)) nextP0 = pp.first;
+    if (isBlocked(nextP1)) nextP1 = pp.second;
 
-	case 'L'/* constant-expression */:
-		/* code */
-		next_p0.first--;
-		next_p1.first--;
-		break;
-
-	default:
-		break;
-	}
-
-	const auto n = mat.size();
-
-	if(next_p0.first < 0 || next_p0.second < 0 || next_p0.first>=n || next_p0.second>= n){
-		next_p0 = pp.first;
-	} else if(mat[next_p0.second][next_p0.first] == '#'){
-		next_p0 = pp.first;
-	}
-
-	if(next_p1.first < 0 || next_p1.second < 0 || next_p1.first>=n || next_p1.second>= n){
-		next_p1 = pp.second;
-	} else if(mat[next_p1.second][next_p1.first] == '#'){
-		next_p1 = pp.second;
-	}
-
-	auto ret = make_pair(next_p0, next_p1);
-
-	//cout << "---" << endl;
-	//cout << pp.first.first;
-	//cout << pp.first.second;
-	//cout << pp.second.first;
-	//cout << pp.second.second;
-	//cout << endl;
-
-	//cout << ret.first.first;
-	//cout << ret.first.second;
-	//cout << ret.second.first;
-	//cout << ret.second.second;
-	//cout << endl;
-
-	return ret;
+    return {nextP0, nextP1};
 }
 
-int main(void){
-	int n;
-	cin >> n;
+int main() {
+    int n;
+    std::cin >> n;
 
-	vector<string> matrix(n);
-	for (auto &l : matrix){
-		cin >> l;
-	}
+    std::vector<std::string> matrix(n);
+    for (auto& line : matrix) {
+        std::cin >> line;
+    }
 
-	//find p
-	vector<pair<int, int>> positions; 
-	for (int i=0;i<n;i++){
-		for(int j=0;j<n;j++){
-			if(matrix[i][j]=='P'){
-				positions.emplace_back(make_pair(j, i));
-				//cout << "found " << j << i << endl;
-			}
-		}
-	}
+    std::vector<Position> positions;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == 'P') {
+                positions.emplace_back(j, i);
+            }
+        }
+    }
 
-	pos_pair pos_init = make_pair(positions[0], positions[1]);
+    PositionPair startPosition = {positions[0], positions[1]};
+    std::queue<std::pair<int, PositionPair>> queue;
+    queue.push({0, startPosition});
 
-	//cout << pos_init.first.first;
-	//cout << pos_init.first.second;
-	//cout << pos_init.second.first;
-	//cout << pos_init.second.second;
-	//cout << endl;
+    std::unordered_set<unsigned int> visited;
+    visited.insert(encode(startPosition));
 
+    while (!queue.empty()) {
+        auto [count, current] = queue.front();
+        queue.pop();
 
-	//BFS
-	queue<pair<int, pos_pair>> q;
-	q.push(make_pair(0, pos_init));
+        if (isSamePosition(current)) {
+            std::cout << count << std::endl;
+            return 0;
+        }
 
-	unordered_set<unsigned int> s;
-	s.insert(decode(pos_init));
-	//cout << "dec " << decode(pos_init) << endl;
+        for (char dir : {'U', 'R', 'D', 'L'}) {
+            PositionPair next = move(matrix, current, dir);
+            unsigned int encodedNext = encode(next);
+            if (!visited.contains(encodedNext)) {
+                queue.push({count + 1, next});
+                visited.insert(encodedNext);
+            }
+        }
+    }
 
-	while(!q.empty()){
-		auto cur = q.front().second;
-		auto count = q.front().first;
-		q.pop();
-
-		//cout << count;
-		//cout << cur.first.first;
-		//cout << cur.first.second;
-		//cout << cur.second.first;
-		//cout << cur.second.second;
-		//cout << endl;
-
-		if(is_same_pos(cur)){
-			cout << count << endl;
-			return 0;
-		}
-
-		//up
-		{
-			const auto next = move(matrix, cur, 'U');
-			if(!s.contains(decode(next))){
-				q.push(make_pair(count+1, next));
-				s.insert(decode(next));
-			}
-		}
-
-		//right
-		{
-			const auto next = move(matrix, cur, 'R');
-			if(!s.contains(decode(next))){
-				q.push(make_pair(count+1, next));
-				s.insert(decode(next));
-			}
-		}
-
-		//down
-		{
-			const auto next = move(matrix, cur, 'D');
-			if(!s.contains(decode(next))){
-				q.push(make_pair(count+1, next));
-				s.insert(decode(next));
-			}
-		}
-
-		//left
-		{
-			const auto next = move(matrix, cur, 'L');
-			if(!s.contains(decode(next))){
-				q.push(make_pair(count+1, next));
-				s.insert(decode(next));
-			}
-		}
-
-		//cout << "qsize" << q.size() << endl;
-	}
-
-	cout << -1 << endl;
-	return 0;
+    std::cout << -1 << std::endl;
+    return 0;
 }
