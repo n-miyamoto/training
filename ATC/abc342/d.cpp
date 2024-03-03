@@ -1,56 +1,46 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-using namespace std;
-#define BUF (1000)
-#define ll long long 
+using ll = long long;
 
-constexpr auto MAX=200001;
-
-
-ll f(ll x){
-	ll k=1;
-	ll ans = x;
-	while(k*k<=x){
-		if(x%(k*k)==0){
-			ans = min(ans, x/(k*k));
-		}
-		k++;
-	}
-	return ans;
+ll minimizeBase(ll x) {
+    ll k = 1;
+    ll result = x;
+    while (k * k <= x) {
+        if (x % (k * k) == 0) {
+            result = std::min(result, x / (k * k));
+        }
+        k++;
+    }
+    return result;
 }
 
-int main(void){
-	ll n;
-	cin >> n;
-	vector<ll> a(n);
-	for(auto& x: a){
-		cin >> x;
-	}
+int main() {
+    ll n;
+    std::cin >> n;
+    std::vector<ll> numbers(n);
+    for (auto& num : numbers) {
+        std::cin >> num;
+    }
 
-	vector<ll> s(n);
-	for(ll i=0;i<n;i++){
-		s[i] = f(a[i]);
-	}
+    std::vector<ll> simplifiedNumbers(n);
+    for (ll i = 0; i < n; i++) {
+        simplifiedNumbers[i] = minimizeBase(numbers[i]);
+    }
 
+    std::sort(simplifiedNumbers.begin(), simplifiedNumbers.end());
 
-	//for(const auto& x: s) cout << x << " ";
-	sort(s.begin(), s.end());
-	//for(const auto& x: s) cout << x << " ";
+    ll pairsCount = 0;
+    for (ll i = 0, count = 0; i < n; i++) {
+        count++;
+        if (i == n - 1 || simplifiedNumbers[i + 1] != simplifiedNumbers[i]) {
+            pairsCount += count * (count - 1) / 2;
+            count = 0;
+        }
+    }
 
-	ll ans = 0;
-	for(ll i=0, cnt=0;i<n;i++){
-		if(s[i]==0) ans += n-i-1;
-		else{
-			cnt++;
-			if (i == n - 1 || s[i + 1] != s[i])
-			{
-				ans += cnt*(cnt-1)/2;
-				cnt = 0;
-			}
-		}
-	}
-
-	cout << ans << endl;
-	
-	return 0;
+    std::cout << pairsCount << std::endl;
+    
+    return 0;
 }
