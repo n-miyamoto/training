@@ -1,38 +1,35 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <map>
 
-using namespace std;
-#define BUF (1000)
-#define ll long long 
+using ll = long long;
 
+int main() {
+    ll n, t;
+    std::cin >> n >> t;
 
-int main(void){
-	ll n, t;
-	cin >> n >> t;
+    std::vector<ll> playerScore(n + 1, 0); // Stores each player's current score
+    std::map<ll, ll> scoreFrequency;       // Maps scores to their frequencies among players
+    scoreFrequency[0] = n;                 // Initially, all players have a score of 0
 
-	vector<ll> player_score(n+1, 0);
-	map<ll, ll> variety;
-	variety.insert(make_pair(0, n));
+	for (auto _ : std::vector<ll>(t)){
+        ll player, scoreIncrease;
+        std::cin >> player >> scoreIncrease;
 
-	for(ll i=0;i<t;i++){
-		ll a, b;
-		cin >> a >> b;
+        ll& currentScore = playerScore[player];
+        ll previousScore = currentScore;
+        currentScore += scoreIncrease;
 
-		auto score_prev = player_score[a];
-		player_score[a]+=b;
-		auto score_cur = player_score[a];
+        // Update the frequency map for the previous score
+        if (--scoreFrequency[previousScore] == 0) {
+            scoreFrequency.erase(previousScore);
+        }
 
-		variety[score_prev]--;
-		if(variety[score_prev]==0) variety.erase(score_prev);
+        // Update the frequency map for the current score
+        scoreFrequency[currentScore]++;
 
-		if(variety.contains(score_cur)){
-			variety[score_cur]++;
-		}else{
-			variety.insert(make_pair(score_cur, 1));
-		}
+        std::cout << scoreFrequency.size() << std::endl;
+    }
 
-		cout << variety.size() << endl;
-	}
-
-	
-	return 0;
+    return 0;
 }
