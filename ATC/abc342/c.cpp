@@ -1,34 +1,35 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
 
-using namespace std;
+int main() {
+    int n, q;
+    std::string s;
+    std::cin >> n >> s >> q;
 
-int main(void){
-	int n;
-	string s;
-	int q;
-	cin >> n >> s >> q;
+    std::unordered_map<char, char> replacements;
+    for (char c = 'a'; c <= 'z'; ++c) {
+        replacements[c] = c; // Initially, each character maps to itself
+    }
 
-	char replace_to[26];
-	for (char c = 'a'; c<='z'; c++ ){
-		replace_to[c - 'a'] = c;
-	}
+    for (int i = 0; i < q; ++i) {
+        char c, d;
+        std::cin >> c >> d;
+        // Update all entries in the map that currently map to 'c' to map to 'd' instead
+        for (auto &entry : replacements) {
+            if (entry.second == c) {
+                entry.second = d;
+            }
+        }
+    }
 
-	// Update Replacement Table
-	for (int i=0;i<q;i++){
-		char c, d;
-		cin >> c >> d;
+    // Apply the replacements to the string
+    for (char &c : s) {
+        c = replacements[c];
+    }
 
-		for (char t = 'a'; t<='z'; t++ ){
-			if(replace_to[t - 'a'] == c) replace_to[t - 'a'] = d;
-		}
-	}
+    std::cout << s << std::endl;
 
-	// Replace
-	for (auto &c : s){
-		c = replace_to[c - 'a'];
-	}
-
-	cout << s << endl;
-
-	return 0;
+    return 0;
 }
