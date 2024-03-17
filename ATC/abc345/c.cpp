@@ -1,32 +1,32 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
-#define BUF (1000)
-#define ll long long 
+using ll = long long;
 
-int main(void){
-	string s;
-	cin >> s;
+int main() {
+    string s;
+    cin >> s;
 
-	vector<ll> hist(26, 0);
+    vector<ll> hist(26, 0);
+    for (const auto &c : s) {
+        hist[c - 'a']++;
+    }
 
-	for(const auto & c : s) hist[c-'a']++;
+    ll ans = 0;
+    // Calculate combinations of different characters
+    for (int i = 0; i < 26; ++i) {
+        for (int j = i + 1; j < 26; ++j) {
+            ans += hist[i] * hist[j];
+        }
+    }
+    
+    // Check for characters that appear at least twice and can form pairs with themselves
+    bool sameString = any_of(hist.begin(), hist.end(), [](ll count){ return count >= 2; });
+    if (sameString) ans++;
 
-	bool same_string=false;
-	ll ans = 0;
-	for (char ci='a'; ci<= 'z' ; ci++){
-		for (char cj=ci; cj<= 'z' ; cj++){
-			if(ci==cj){
-				if(hist[ci-'a'] >=2) same_string=true;
-			}else{
-				ans += hist[ci-'a'] * hist[cj-'a'];
-			}
-		}
-	}
+    cout << ans << endl;
 
-	if(same_string) ans++;
-
-	cout << ans << endl;
-
-	return 0;
+    return 0;
 }
