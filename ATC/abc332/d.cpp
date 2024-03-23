@@ -1,107 +1,80 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+#include <numeric>
 
 using namespace std;
-#define BUF (1000)
-#define ll long long 
-
 
 int h, w;
 
-void show(vector<std::vector<int>> &m){
-	for(auto& v: m){
-		for(auto& x: v){
-			cout << x <<"\t";
-		}
-		cout << endl;
-	}
+void show(const vector<vector<int>>& m) {
+    for (const auto& v : m) {
+        for (int x : v) {
+            cout << x << "\t";
+        }
+        cout << endl;
+    }
 }
 
-
-vector<std::vector<int>> create_mat(vector<std::vector<int>> a, vector<int> row, vector<int> col){
-	vector<std::vector<int>> t1(h, std::vector<int>(w, 0));
-	for(int i=0;i<row.size(); i++){
-		t1[i] = a[row[i]];
-	}
-
-	vector<std::vector<int>> t2(h, std::vector<int>(w, 0));
-	//t2 = t1;
-	for(int i=0;i<col.size(); i++){
-		for(int j=0;j<h;j++){
-			t2[j][i] = t1[j][col[i]];
-		}
-	}
-
-	return t2;
+vector<vector<int>> createMat(const vector<vector<int>>& a, const vector<int>& row, const vector<int>& col) {
+    vector<vector<int>> temp(h, vector<int>(w));
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            temp[i][j] = a[row[i]][col[j]];
+        }
+    }
+    return temp;
 }
 
-bool compare_mat(const vector<std::vector<int>> &m1, const vector<std::vector<int>> &m2){
-	bool ret = true;
-	for(int i=0;i<h; i++){
-		for(int j=0;j<w;j++){
-			if(m1[i][j] != m2[i][j]) ret = false;
-		}
-	}
-	return ret;
+bool compareMat(const vector<vector<int>>& m1, const vector<vector<int>>& m2) {
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            if (m1[i][j] != m2[i][j]) return false;
+        }
+    }
+    return true;
 }
 
-int count_swap(const vector<int> &v){
-	vector<int> t = v;
-	int swap_count = 0;
-	for(int i=0;i<t.size();i++){
-		while(t[i]!=i){
-			//find and swap 
-			const auto ite = std::find(t.begin(), t.end(), i);
-			const auto prev = ite-1;
-			*ite = *prev;
-			*prev = i;
-			swap_count++;
-		}
-	}
-
-	return swap_count;
+int countSwap(const vector<int> a) {
+	vector<int> v = a;
+    int swapCount = 0;
+    for (int i = 0; i < v.size(); i++) {
+        while (v[i] != i) {
+            auto ite = find(v.begin(), v.end(), i);
+            swap(*(ite-1), *ite);
+            swapCount++;
+        }
+    }
+    return swapCount;
 }
 
-int main(void){
-	cin >> h >> w;
+int main() {
+    cin >> h >> w;
 
-	vector<std::vector<int>> a(h, std::vector<int>(w, 0));
-	vector<std::vector<int>> b(h, std::vector<int>(w, 0));
+    vector<vector<int>> a(h, vector<int>(w));
+    vector<vector<int>> b(h, vector<int>(w));
 
-	for(auto& v: a) for(auto& x: v) cin >> x;
-	for(auto& v: b) for(auto& x: v) cin >> x;
+    for (auto& v : a) for (auto& x : v) cin >> x;
+    for (auto& v : b) for (auto& x : v) cin >> x;
 
-	//show(a);
-	//show(b);
+    vector<int> v_row(h), v_col(w);
+    iota(v_row.begin(), v_row.end(), 0);
+    iota(v_col.begin(), v_col.end(), 0);
 
-	vector<int> v_row(h); 
-	for(int i; i<h;i++) v_row[i] = i;
-	vector<int> v_col(w); 
-	for(int i; i<w;i++) v_col[i] = i;
+    int ans = INT_MAX;
+    do {
+        do {
+            auto m = createMat(a, v_row, v_col);
+            if (compareMat(b, m)) {
+                int tmp = countSwap(v_row) + countSwap(v_col);
+                ans = min(ans, tmp);
+            }
+        } while (next_permutation(v_col.begin(), v_col.end()));
+    } while (next_permutation(v_row.begin(), v_row.end()));
 
+    if (ans == INT_MAX) ans = -1;
+    cout << ans << endl;
 
-	int ans = -1;
-	do{
-		do{
-			auto m = create_mat(a, v_row, v_col);
-			//show(m);
-			//cout << "-----\n";
-			if(compare_mat(b, m)){
-				//cout << "-----\n";
-				//for(const auto x : v_col) cout << x << " " ;
-				//cout << "-----\n";
-				//for(const auto x : v_row) cout << x << " " ;
-				//cout << "-----\n";
-				//cout << count_swap(v_row) <<  " " << count_swap(v_col) << endl;
-
-
-				auto tmp = count_swap(v_row) + count_swap(v_col);
-				if(ans<0) ans = tmp;
-				else ans = min(ans, tmp);
-			}
-		} while (std::next_permutation(v_row.begin(), v_row.end()));
-	} while (std::next_permutation(v_col.begin(), v_col.end()));
-
-	cout << ans << endl;
-
-	return 0;
+    return 0;
 }
