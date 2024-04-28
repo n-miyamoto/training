@@ -1,89 +1,68 @@
-#include <bits/stdc++.h>
-
+#include <iostream>
+#include <vector>
 using namespace std;
-#define BUF (200005)
 using ll = long long;
 
-static int N;
-int p[BUF]; //parentp
-int d[BUF]; //depth
+class UnionFind {
+private:
+    vector<int> parent;
+    vector<int> depth;
+    int size;
 
-void uf_init(int n){
-    N=n;
-    for(int i=0;i<n;i++) p[i]=i,d[i]=0;
-}
-
-int find(int x){
-    if(p[x]==x) return x;
-    else{
-        p[x] = find(p[x]);
-        return p[x];
+public:
+    UnionFind(int n) : parent(n), depth(n, 0), size(n) {
+        for (int i = 0; i < n; ++i) parent[i] = i;
     }
-}
 
-void unite(int x, int y){
-    x=find(x);
-    y=find(y);
-
-    if(x==y)return;
-
-    if(d[x]<d[y]){
-        p[x]=y;
-    }else if(d[x]>d[y]){
-        p[y]=x;
-    }else{
-        p[y]=x;
-        d[x]++;
+    int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]); // path compression
     }
-}
 
-bool same(int x, int y){
-    return find(x)==find(y);
-}
+    void unite(int x, int y) {
+        x = find(x);
+        y = find(y);
+        if (x != y) {
+            if (depth[x] < depth[y]) {
+                parent[x] = y;
+            } else {
+                parent[y] = x;
+                if (depth[x] == depth[y]) depth[x]++;
+            }
+        }
+    }
 
-void show_alld(void){
-    cout << "depth  : ";
-    for(int i=0;i<N;i++) cout << d[i] << " ";
-    cout << "\n";
-}
-void show_allp(void){
-    cout << "parent : ";
-    for(int i=0;i<N;i++) cout << p[i] << " ";
-    cout << "\n";
-}
-int show_parent(int i){
-    return p[i];
-}
+    bool same(int x, int y) {
+        return find(x) == find(y);
+    }
+};
 
-int show_depth(int i){
-    return d[i];
-}
+int main() {
+    int n, m;
+    cin >> n >> m;
+    
+    UnionFind uf(n + 1); // Using n+1 for 1-based index
 
-int main(void){
-	ll n, m;
-	cin >> n >> m;
-	
-	uf_init(n);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        uf.unite(a, b);
+    }
 
-	for(int i=0;i<m;i++){
-		int a, b;
-		cin >> a >> b;
-		unite(a, b);
-	}
+    vector<ll> groupCount(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        groupCount[uf.find(i)]++;
+    }
 
-	vector<ll> group(BUF, 0);
-	for(int i=1;i<=n;i++){
-		group[find(i)]++;
-	}
+    ll answer = 0;
+    for (int i = 1; i <= n; i++) {
+        if (groupCount[i] > 1) {
+            answer += groupCount[i] * (groupCount[i] - 1) / 2;
+        }
+    }
+    answer -= m;
 
+    cout << answer << endl;
 
-	ll ans = 0;
-	for(int i=1;i<=n;i++){
-		ans += group[i]*(group[i]-1)/2;
-	}
-	ans-=m;
-
-	cout << ans << endl;
-
-	return 0;
+    return 0;
 }
