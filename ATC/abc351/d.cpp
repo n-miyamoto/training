@@ -1,9 +1,9 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <set>
 
 using namespace std;
-#define BUF (1000)
-#define ll long long 
-
 
 void show(vector<string> &mat){
 	for(auto& line : mat) cout << line << endl;
@@ -43,6 +43,10 @@ public:
     }
 };
 
+bool is_valid(int x, int y, int h, int w) {
+    return x >= 0 && x < h && y >= 0 && y < w;
+}
+
 int main(void){
 	int h, w;
 	cin >> h >> w;
@@ -57,18 +61,13 @@ int main(void){
 		for(int j=0;j<w;j++){
 			if(mat[i][j]=='#') continue;
 
-			auto a=i+1;auto b=j;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='#') mat[i][j] = 'M';
-
-			a=i-1;b=j;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='#') mat[i][j] = 'M';
-
-			
-			a=i;b=j+1;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='#') mat[i][j] = 'M';
-
-			a=i;b=j-1;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='#') mat[i][j] = 'M';
+			vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (auto [dx, dy] : directions) {
+                int ni = i + dx, nj = j + dy;
+                if (is_valid(ni, nj, h, w) && mat[ni][nj] == '#') {
+                    mat[i][j] = 'M';
+                }
+            }
 		}
 	}
 
@@ -81,17 +80,12 @@ int main(void){
 			if(mat[i][j]=='M') continue;
 
 			auto a=i-1;auto b=j;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.'){
-				uf.unite(w*i+j, w*a+b);
-			}
+			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') uf.unite(w*i+j, w*a+b);
 
 			a=i;b=j-1;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.'){
-				uf.unite(w*i+j, w*a+b);
-			} 
+			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') uf.unite(w*i+j, w*a+b);
 		}
 	}
-	
 
 	unordered_map<int, set<int>> um_set;
 
@@ -106,25 +100,19 @@ int main(void){
 			//mat[i][j]=='M' case
 			um_set[uf.find(i*w+j)].insert(i*w+j);
 
-			auto a=i-1;auto b=j;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') um_set[uf.find(a*w+b)].insert(i*w+j);
-
-			a=i+1;b=j;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') um_set[uf.find(a*w+b)].insert(i*w+j);
-
-			a=i;b=j-1;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') um_set[uf.find(a*w+b)].insert(i*w+j);
-
-			a=i;b=j+1;
-			if (a>=0 && a<h && b>=0 && b<w && mat[a][b]=='.') um_set[uf.find(a*w+b)].insert(i*w+j);
-
+			vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (auto [dx, dy] : directions) {
+                int ni = i + dx, nj = j + dy;
+                if (is_valid(ni, nj, h, w) && mat[ni][nj] == '.') {
+					um_set[uf.find(ni*w+nj)].insert(i*w+j);
+                }
+            }
 		}
 	}
 
-	auto ans = 0;
+	int ans = 0;
 	for(const auto& s : um_set){
-		//cout << s.first << " size: " << s.second.size() << endl;
-		if(ans < s.second.size()) ans = s.second.size();
+		ans = std::max(ans, static_cast<int>(s.second.size()));
 	}
 
 	cout << ans << endl; 
