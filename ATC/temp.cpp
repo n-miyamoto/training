@@ -1,12 +1,11 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-#define BUF (1000)
-#define ll long long 
+using ll=long long;
 
-int n;
 
 int main(void){
+	int n;
 	cin >> n;
 	
 	return 0;
