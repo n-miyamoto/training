@@ -1,11 +1,11 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <unordered_map>
 
-using namespace std;
 using ll = long long;
 
-unordered_map<ll, ll> cache; 
+std::unordered_map<ll, ll> cache; 
 
-ll solve(ll n){
+ll calculateSum(ll n){
 	if(n==1) return 0;
 
 	if(cache.contains(n)){
@@ -14,9 +14,9 @@ ll solve(ll n){
 
 	ll ans;
 	if(n%2==0){
-		ans = n + 2*solve(n/2);
+		ans = n + 2*calculateSum(n/2);
 	}else{
-		ans = n + solve(n/2) + solve(n/2+1);
+		ans = n + calculateSum(n/2) + calculateSum(n/2+1);
 	}
 
 	cache[n] = ans;
@@ -25,8 +25,8 @@ ll solve(ll n){
 
 int main(void){
 	ll n;
-	cin >> n;
-	cout << solve(n) << endl;
+	std::cin >> n;
+	std::cout << calculateSum(n) << std::endl;
 	return 0;
 }
 

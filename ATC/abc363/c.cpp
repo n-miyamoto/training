@@ -3,7 +3,7 @@
 using namespace std;
 
 
-bool isPalindrome(const std::string& str) {
+bool isPalindrome(const string& str) {
     int left = 0;
     int right = str.size() - 1;
     while (left < right) {

@@ -16,11 +16,9 @@ int main(void){
 	cin >> h >> w >> m;
 
 	vector<query> queries(m);
-	for(auto& q : queries){
-		ll t, a, x;
-		cin >> t >> a >> x;
-		q = {t, a, x};
-	}
+	for (auto& q : queries) {
+        cin >> q.type >> q.idx >> q.color;
+    }
 	
 	//remove unused queries
 	vector<bool> used_col(200005, false);
