@@ -1,49 +1,60 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <optional>
 
 using namespace std;
-using ll=long long;
+using ll = long long;
 
-struct status{
-	int node;
-	int depth;
+struct Status {
+    int node;
+    int depth;
 };
 
-int main(void){
-	int n, m;
-	cin >> n >> m;
+constexpr int START_NODE = 0;
 
-	vector<vector<int>> g(n);
+optional<int> bfs(const vector<vector<int>>& graph) {
+    int n = graph.size();
+    vector<bool> visited(n, false);
+    visited[START_NODE] = true;
 
-	for(int i=0; i<m; i++){
-		int a, b;
-		cin >> a >> b;
-		g[a-1].push_back(b-1);
-	}
+    queue<Status> q;
+    q.push({START_NODE, 1});
 
+    while (!q.empty()) {
+        auto [node, depth] = q.front();
+        q.pop();
 
-	vector<bool> passed(n, false);
-	passed[0] = true;
-	queue<status> q;
-	q.push({0, 1});
+        for (const auto& neighbor : graph[node]) {
+            if (neighbor == START_NODE) {
+                return depth; // Found a path back to the start
+            }
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                q.push({neighbor, depth + 1});
+            }
+        }
+    }
 
-	while(!q.empty()){
-		status s = q.front();
-		q.pop();
+    return nullopt; // No path found
+}
 
-		for(const auto x : g[s.node]){
-			if(x==0){
-				cout << s.depth << endl;
-				return 0;
-			}
-			if(!passed[x]){
-				passed[x] = true;
-				status next = {x, s.depth+1};
-				q.push(next);
-			}
-		}
-	}
+int main() {
+    int n, m;
+    cin >> n >> m;
 
-	cout << -1 << endl;
-	
-	return 0;
+    vector<vector<int>> graph(n);
+    for (int i = 0; i < m; ++i) {
+        int a, b;
+        cin >> a >> b;
+        graph[a - 1].push_back(b - 1);
+    }
+
+    if (auto result = bfs(graph)) {
+        cout << *result << endl;
+    } else {
+        cout << -1 << endl;
+    }
+
+    return 0;
 }
