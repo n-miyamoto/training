@@ -14,13 +14,12 @@ ll sum_range(ll base, ll from, ll to){
 	return ret;
 }
 
-ll sum_range_opt(ll base, ll from, ll to){
-	ll l = to - from + 1;
-	ll ret = 0;
-	ret += (from-base)*l;
-	ret += sum_from_zero(l-1);
-	return ret;
+// Optimized version of sum_range
+ll sum_range_opt(ll base, ll from, ll to) {
+    ll length = to - from + 1;
+    return (from - base) * length + sum_from_zero(length - 1);
 }
+
 
 int main(void){
 	//input
@@ -33,9 +32,8 @@ int main(void){
 
 
 	// sort x, a
-	vector<pair<ll, ll>> v;
-	v.push_back(make_pair(0, 0));
-	for(int i=0;i<m;i++) v.push_back(make_pair(x[i], a[i]));
+	vector<pair<ll, ll>> v = {{0, 0}};
+	for(int i=0;i<m;i++) v.emplace_back(make_pair(x[i], a[i]));
 	sort(v.begin(), v.end());
 
 	// debug
