@@ -4,8 +4,7 @@ using namespace std;
 using ll=unsigned long long;
 
 char toggleCase(char c) {
-    if (islower(c)) return std::toupper(c); 
-	return std::tolower(c);
+	return islower(c) ? toupper(c) : tolower(c);
 }
 
 int main(void){
@@ -14,18 +13,18 @@ int main(void){
 
 	ll q;
 	cin >> q;
-	for(int i=0;i<q;i++){
-		ll k;
-		cin >> k;
-		k--;
-		ll M=k/s.length();
-		ll m=k%s.length();
+
+	vector<ll> K(q);
+	for(auto&& k: K) cin >> k;
+
+	for(const auto& k: K){
+		ll M=(k-1)/s.length();
+		ll m=(k-1)%s.length();
 
 		if(__builtin_popcountll(M)%2)
-			cout << toggleCase(s[m]);
+			cout << toggleCase(s[m]) << " ";
 		else
-			cout << s[m];
-		cout << " ";
+			cout << s[m] << " ";
 	}
 	cout << endl;
 	
